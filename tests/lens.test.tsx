@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../entrypoints/newtab/App';
-import { parseImageUrl, readImageSource } from '../entrypoints/newtab/lens';
+import { parseHttpUrl, readImageSource } from '../entrypoints/newtab/lens';
 
 const image = new File(['image'], 'cat.png', { type: 'image/png' });
 const text = new File(['text'], 'note.txt', { type: 'text/plain' });
@@ -44,13 +44,13 @@ beforeEach(() => {
   vi.spyOn(HTMLInputElement.prototype, 'files', 'set').mockImplementation(() => undefined);
 });
 
-describe('parseImageUrl', () => {
+describe('parseHttpUrl', () => {
   it('accepts only http and https URLs', () => {
-    expect(parseImageUrl(' https://example.com/a.png ')).toBe('https://example.com/a.png');
-    expect(parseImageUrl('http://example.com/a.png')).toBe('http://example.com/a.png');
-    expect(parseImageUrl('file:///home/a.png')).toBeNull();
-    expect(parseImageUrl('data:image/png;base64,AAAA')).toBeNull();
-    expect(parseImageUrl('cat')).toBeNull();
+    expect(parseHttpUrl(' https://example.com/a.png ')).toBe('https://example.com/a.png');
+    expect(parseHttpUrl('http://example.com/a.png')).toBe('http://example.com/a.png');
+    expect(parseHttpUrl('file:///home/a.png')).toBeNull();
+    expect(parseHttpUrl('data:image/png;base64,AAAA')).toBeNull();
+    expect(parseHttpUrl('cat')).toBeNull();
   });
 });
 

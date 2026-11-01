@@ -2,7 +2,7 @@ import { type FormEvent, useEffect, useRef, useState } from 'react';
 import {
   findImageFile,
   type ImageSource,
-  parseImageUrl,
+  parseHttpUrl,
   readImageSource,
   searchWithLens,
 } from './lens';
@@ -80,7 +80,7 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
   const handleUrlSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const url = parseImageUrl(urlInputRef.current?.value ?? '');
+    const url = parseHttpUrl(urlInputRef.current?.value ?? '');
     if (url) {
       searchWithLens({ type: 'url', url });
       onClose();

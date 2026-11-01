@@ -3,7 +3,7 @@ const LENS_URL_SEARCH_URL = 'https://lens.google.com/uploadbyurl';
 
 export type ImageSource = { type: 'file'; file: File } | { type: 'url'; url: string };
 
-export function parseImageUrl(text: string): string | null {
+export function parseHttpUrl(text: string): string | null {
   try {
     const url = new URL(text.trim());
     return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null;
@@ -23,7 +23,7 @@ export function readImageSource(data: Pick<DataTransfer, 'files' | 'getData'>): 
   // Web ページからドラッグした画像は、ファイルではなく URL として渡されることがある。
   const uriList = data.getData('text/uri-list');
   const firstUri = uriList.split(/\r?\n/).find((line) => line && !line.startsWith('#'));
-  const url = parseImageUrl(firstUri ?? data.getData('text/plain'));
+  const url = parseHttpUrl(firstUri ?? data.getData('text/plain'));
 
   return url ? { type: 'url', url } : null;
 }
