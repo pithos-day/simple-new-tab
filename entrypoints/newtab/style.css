@@ -31,8 +31,8 @@ body {
 .newtab {
   display: grid;
   min-height: 100vh;
-  padding: 24px;
-  place-items: center;
+  padding: 20vh 24px 24px;
+  place-items: start center;
 }
 
 .search {
