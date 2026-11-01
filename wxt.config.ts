@@ -74,5 +74,6 @@ export default defineConfig({
     description: 'A simple new tab page for Chromium.',
     minimum_chrome_version: '104',
     permissions: ['search'],
+    host_permissions: ['https://suggestqueries.google.com/*'],
   },
 });
