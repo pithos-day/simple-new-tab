@@ -1,10 +1,21 @@
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import license from 'rollup-plugin-license';
 import { defineConfig } from 'wxt';
 import { NOTICES_FILE, type NoticeDependency, renderNotices } from './scripts/notices';
 
 const bundledDependencies = new Map<string, NoticeDependency>();
+
+// public/favicon.svg に埋め込んでいる Chromium の新規タブ用アイコン。
+// npm パッケージではなく自動収集されないため、ライセンス表記を明示的に追加する。
+const CHROMIUM_FAVICON_NOTICE: NoticeDependency = {
+  name: 'Chromium new tab favicon',
+  version: '689849d',
+  license: 'BSD-3-Clause',
+  homepage: 'https://www.chromium.org/',
+  licenseText: readFileSync(new URL('./assets/chromium-LICENSE', import.meta.url), 'utf8'),
+  noticeText: null,
+};
 
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
@@ -53,7 +64,7 @@ export default defineConfig({
         );
       }
 
-      const contents = renderNotices([...bundledDependencies.values()]);
+      const contents = renderNotices([...bundledDependencies.values(), CHROMIUM_FAVICON_NOTICE]);
       writeFileSync(path.resolve(wxt.config.root, NOTICES_FILE), contents, 'utf8');
 
       const generatedFile = {

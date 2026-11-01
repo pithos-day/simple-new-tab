@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <title>New Tab</title>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      image {
+        filter: brightness(0) invert(0.89);
+      }
+    }
+  </style>
+  <image width="32" height="32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAZlBMVEUAAAA4QEBAQEA8QEA8QEM8QEM8QEI8QEM4QEg9QEM8QEQ+QEM7QEM9QEI9QEM7QEM6QEA6QEI7QEM7QEI9QEI7QEI8QEI9QEQ8QEE8QEI8QEQ8QEQ8QEQ8QEM6QEU7QEQ8QEI8QEPSI5agAAAAIXRSTlMAIBBAkL/v7yBQQF/f39+fMGCg349wgI+Qz89/gK8wcH9t5kdPAAABEklEQVR42q3SBZLDMBQDUJlhy8yt7n/Jre3YgclwX7mBLyXGTyl9c6QzWmHOdsVm8Ycpbziy8Bj5c5xwAQOBM4ZjVpzhPJojM/sIYkCilyNqiXlrIJJ8A5AblfdSBbJIBTx5AuQhlVl7QDMre1y4kBBXwJes6ae0THSdfwI2wI6dM/BgckViSSfTfBb5ZyhfkPBrnbM0GwhmSGqcFxs12iHnMSjBCok4GHGrV16zs66BTanZui2Z7QWwGtSMrZtIx1ktgXvNknUHHlPVuEmNfXcqFFsWH1S7yYowLBZrJYQHNvUElbDstYRWzC65dRs5XpSWrWK5qTZgRCxbrgO/jMDUdlly+fTxhzlRmwDcjY74pX/TRjTEQIWxRAAAAABJRU5ErkJggg=="/>
+</svg>

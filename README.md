@@ -100,8 +100,10 @@ Chromium が起動し、拡張機能が読み込まれた状態で開発でき�
 ├── tests/                   # Vitest
 ├── scripts/notices.ts       # 第三者ライセンスの整形
 ├── THIRD_PARTY_NOTICES.txt  # ビルド時に生成する第三者ライセンス一覧
-├── assets/icon.svg          # アイコンの原本
+├── assets/icon.svg          # 拡張機能アイコンの原本
+├── assets/chromium-LICENSE  # favicon の元画像のライセンス
 ├── public/icon/             # 16 / 32 / 48 / 96 / 128 px の PNG
+├── public/favicon.svg       # 新規タブに表示する favicon
 ├── wxt.config.ts            # 表示名・説明・ライセンス生成の設定
 ├── biome.json
 ├── eslint.config.js
@@ -121,6 +123,8 @@ Chromium が起動し、拡張機能が読み込まれた状態で開発でき�
     rsvg-convert -w "$size" -h "$size" assets/icon.svg -o "public/icon/$size.png"
   done
   ```
+
+- 新規タブの favicon は、Chromium の [`favicon_ntp.png`](https://chromium.googlesource.com/chromium/src/+/689849d0acca5f4968fba9f61e4d53f0a5dc0624/chrome/app/theme/default_200_percent/common/favicon_ntp.png)（32 px）を `public/favicon.svg` に埋め込んだものです。拡張機能のページは favicon が未指定、または読み込めないと拡張機能アイコンが表示されるため、明示的に指定しています。Chromium はタブの背景に合わせてアイコンを着色しますが、拡張機能からはタブの色を取得できないため、`prefers-color-scheme` で近似しています。
 
 ## 第三者ライセンス
 

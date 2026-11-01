@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title>Simple New Tab</title>
-    <!-- 拡張機能アイコンではなく Chromium 標準の favicon をタブに表示する -->
-    <link rel="icon" href="data:," />
+    <!-- 未指定や読み込めない favicon では拡張機能アイコンが表示されるため、明示的に指定する -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
     <div id="root"></div>
