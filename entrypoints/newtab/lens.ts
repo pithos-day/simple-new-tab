@@ -16,9 +16,7 @@ export function findImageFile(data: Pick<DataTransfer, 'files'>): File | null {
   return Array.from(data.files).find((file) => file.type.startsWith('image/')) ?? null;
 }
 
-export function readDroppedImage(
-  data: Pick<DataTransfer, 'files' | 'getData'>,
-): ImageSource | null {
+export function readImageSource(data: Pick<DataTransfer, 'files' | 'getData'>): ImageSource | null {
   const file = findImageFile(data);
   if (file) return { type: 'file', file };
 

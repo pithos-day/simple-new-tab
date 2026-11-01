@@ -3,7 +3,7 @@ import {
   findImageFile,
   type ImageSource,
   parseImageUrl,
-  readDroppedImage,
+  readImageSource,
   searchWithLens,
 } from './lens';
 
@@ -34,7 +34,7 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
         ? { type: 'file', file }
         : event.target === urlInputRef.current
           ? null
-          : readDroppedImage(event.clipboardData);
+          : readImageSource(event.clipboardData);
       if (!source) return;
 
       event.preventDefault();
@@ -51,7 +51,7 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
       event.preventDefault();
       setIsDragging(false);
 
-      const source = event.dataTransfer && readDroppedImage(event.dataTransfer);
+      const source = event.dataTransfer && readImageSource(event.dataTransfer);
       if (source) {
         send(source);
       } else {

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../entrypoints/newtab/App';
-import { parseImageUrl, readDroppedImage } from '../entrypoints/newtab/lens';
+import { parseImageUrl, readImageSource } from '../entrypoints/newtab/lens';
 
 const image = new File(['image'], 'cat.png', { type: 'image/png' });
 const text = new File(['text'], 'note.txt', { type: 'text/plain' });
@@ -54,16 +54,16 @@ describe('parseImageUrl', () => {
   });
 });
 
-describe('readDroppedImage', () => {
+describe('readImageSource', () => {
   it('prefers an image file', () => {
     expect(
-      readDroppedImage(dataTransfer([text, image], { 'text/uri-list': 'https://example.com/a' })),
+      readImageSource(dataTransfer([text, image], { 'text/uri-list': 'https://example.com/a' })),
     ).toEqual({ type: 'file', file: image });
   });
 
   it('falls back to the first URL of a uri-list', () => {
     expect(
-      readDroppedImage(
+      readImageSource(
         dataTransfer([], { 'text/uri-list': '# comment\r\nhttps://example.com/a.png\r\n' }),
       ),
     ).toEqual({ type: 'url', url: 'https://example.com/a.png' });
@@ -71,12 +71,12 @@ describe('readDroppedImage', () => {
 
   it('falls back to plain text', () => {
     expect(
-      readDroppedImage(dataTransfer([], { 'text/plain': 'https://example.com/a.png' })),
+      readImageSource(dataTransfer([], { 'text/plain': 'https://example.com/a.png' })),
     ).toEqual({ type: 'url', url: 'https://example.com/a.png' });
   });
 
   it('returns null when there is no image', () => {
-    expect(readDroppedImage(dataTransfer([text], { 'text/plain': 'cat' }))).toBeNull();
+    expect(readImageSource(dataTransfer([text], { 'text/plain': 'cat' }))).toBeNull();
   });
 });
 
