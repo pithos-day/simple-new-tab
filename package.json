@@ -18,7 +18,17 @@
     "test:watch": "vitest",
     "knip": "knip",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm knip",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "biome check --write --no-errors-on-unmatched",
+      "eslint --fix --no-warn-ignored"
+    ],
+    "*.{json,jsonc,css,html}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
   },
   "keywords": [
     "browser-extension",
@@ -61,7 +71,9 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
     "happy-dom": "^21.0.4",
+    "husky": "^9.1.7",
     "knip": "^6.44.0",
+    "lint-staged": "^17.6.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.72.1",
     "vitest": "^4.1.12",
