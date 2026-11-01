@@ -45,7 +45,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   const trimmedQuery = query.trim();
   const suggestions = useSuggestions(trimmedQuery, isFocused);
-  const isOpen = isFocused && !isDismissed && suggestions.length > 0;
+  const isListOpen = isFocused && !isDismissed && suggestions.length > 0;
   const activeSuggestion =
     activeIndex >= 0 && activeIndex < suggestions.length ? suggestions[activeIndex] : undefined;
 
@@ -100,7 +100,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
         event.preventDefault();
         setIsDismissed(false);
-        const nextIndex = isOpen
+        const nextIndex = isListOpen
           ? (activeSuggestion ? activeIndex + 1 : 0) % suggestions.length
           : 0;
         setActiveIndex(nextIndex);
@@ -112,7 +112,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         event.preventDefault();
         setIsDismissed(false);
         const nextIndex =
-          isOpen && activeSuggestion
+          isListOpen && activeSuggestion
             ? activeIndex <= 0
               ? suggestions.length - 1
               : activeIndex - 1
@@ -121,7 +121,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         break;
       }
       case 'Escape': {
-        if (!isOpen) return;
+        if (!isListOpen) return;
 
         event.preventDefault();
         setIsDismissed(true);
@@ -153,8 +153,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             value={query}
             role="combobox"
             aria-autocomplete="list"
-            aria-expanded={isOpen}
-            aria-controls={isOpen ? LISTBOX_ID : undefined}
+            aria-expanded={isListOpen}
+            aria-controls={isListOpen ? LISTBOX_ID : undefined}
             aria-activedescendant={activeSuggestion ? getOptionId(activeIndex) : undefined}
             autoComplete="off"
             autoCorrect="off"
@@ -185,11 +185,11 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             title="Google レンズで検索"
             aria-expanded={isLensOpen}
             aria-controls={isLensOpen ? LENS_PANEL_ID : undefined}
-            onClick={() => setIsLensOpen((isOpen) => !isOpen)}
+            onClick={() => setIsLensOpen((wasOpen) => !wasOpen)}
           >
             <LensIcon />
           </button>
-          {isOpen && (
+          {isListOpen && (
             <div className="suggestions" id={LISTBOX_ID} role="listbox" aria-label="検索候補">
               {suggestions.map((suggestion, index) => (
                 // biome-ignore lint/a11y/useKeyWithClickEvents: キーボード操作は input の keydown で扱う
