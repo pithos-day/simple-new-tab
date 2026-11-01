@@ -74,16 +74,15 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   }, []);
 
   const runSearch = (text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-
     setIsDismissed(true);
-    onSearch(trimmed);
+    onSearch(text);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    runSearch(query);
+    if (!trimmedQuery) return;
+
+    runSearch(trimmedQuery);
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
