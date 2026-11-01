@@ -113,30 +113,24 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       return;
     }
 
+    const selectedIndex = isListOpen && activeSuggestion ? activeIndex : -1;
+    const showOption = (index: number) => {
+      event.preventDefault();
+      setIsDismissed(false);
+      setActiveIndex(index);
+    };
+
     switch (event.key) {
       case 'ArrowDown': {
         if (suggestions.length === 0) return;
 
-        event.preventDefault();
-        setIsDismissed(false);
-        const nextIndex = isListOpen
-          ? (activeSuggestion ? activeIndex + 1 : 0) % suggestions.length
-          : 0;
-        setActiveIndex(nextIndex);
+        showOption((selectedIndex + 1) % suggestions.length);
         break;
       }
       case 'ArrowUp': {
         if (suggestions.length === 0) return;
 
-        event.preventDefault();
-        setIsDismissed(false);
-        const nextIndex =
-          isListOpen && activeSuggestion
-            ? activeIndex <= 0
-              ? suggestions.length - 1
-              : activeIndex - 1
-            : suggestions.length - 1;
-        setActiveIndex(nextIndex);
+        showOption((selectedIndex <= 0 ? suggestions.length : selectedIndex) - 1);
         break;
       }
       case 'Escape': {
