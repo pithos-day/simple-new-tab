@@ -116,7 +116,7 @@ Chromium が起動し、拡張機能が読み込まれた状態で開発でき�
 - `entrypoints/newtab/index.html` を置くと、WXT が `chrome_url_overrides.newtab` を自動でマニフェストに追加します。
 - `@/` はリポジトリルートへのエイリアスです（WXT が生成する `tsconfig` の paths）。
 - WXT の自動インポート（`defineBackground` など）は ESLint の globals に `.wxt/eslint-auto-imports.mjs` 経由で反映されます。
-- アイコンは `assets/icon.svg` を原本に、`public/icon/*.png` を書き出してコミットしています（現在は仮アイコン）。書き出しには librsvg の `rsvg-convert` を使用します。
+- アイコンは `assets/icon.svg` を原本に、`public/icon/*.png` を書き出してコミットしています。書き出しには librsvg の `rsvg-convert` を使用します。
 
   ```sh
   for size in 16 32 48 96 128; do
