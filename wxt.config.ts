@@ -64,5 +64,6 @@ export default defineConfig({
     name: 'Simple New Tab',
     description: 'A simple new tab page for Chromium.',
     minimum_chrome_version: '104',
+    permissions: ['search'],
   },
 });
