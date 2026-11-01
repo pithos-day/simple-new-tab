@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import {
   findImageFile,
   type ImageSource,
@@ -17,14 +17,17 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState('');
 
+  const searchAndClose = useCallback(
+    (source: ImageSource) => {
+      searchWithLens(source);
+      onClose();
+    },
+    [onClose],
+  );
+
   // パネル外へのドロップでページが画像に置き換わらないよう、開いている間はページ全体で受け取る。
   // 閉じている間は受け取らず、スクリーンショットの誤貼り付けなどで Google に送信しない。
   useEffect(() => {
-    const send = (source: ImageSource) => {
-      searchWithLens(source);
-      onClose();
-    };
-
     const handlePaste = (event: ClipboardEvent) => {
       if (!event.clipboardData) return;
 
@@ -37,7 +40,7 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
       if (!source) return;
 
       event.preventDefault();
-      send(source);
+      searchAndClose(source);
     };
     const handleDragOver = (event: DragEvent) => {
       event.preventDefault();
@@ -53,7 +56,7 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
 
       const source = event.dataTransfer && readImageSource(event.dataTransfer);
       if (source) {
-        send(source);
+        searchAndClose(source);
       } else {
         setError('画像をドロップしてください');
       }
@@ -75,15 +78,14 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
       document.removeEventListener('drop', handleDrop);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onClose]);
+  }, [onClose, searchAndClose]);
 
   const handleUrlSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const url = parseHttpUrl(urlInputRef.current?.value ?? '');
     if (url) {
-      searchWithLens({ type: 'url', url });
-      onClose();
+      searchAndClose({ type: 'url', url });
     } else {
       setError('http または https の画像 URL を入力してください');
     }
