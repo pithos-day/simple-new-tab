@@ -1,4 +1,5 @@
 import {
+  type ChangeEvent,
   type FormEvent,
   type KeyboardEvent,
   useCallback,
@@ -85,6 +86,23 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     runSearch(query);
   };
 
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setIsDismissed(false);
+    setActiveIndex(-1);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    setIsLensOpen(false);
+    setIsDismissed(false);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    setActiveIndex(-1);
+  };
+
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     // 変換中のキー操作は IME に任せる。Enter で確定したときに検索しない。
     if (event.nativeEvent.isComposing) {
@@ -161,20 +179,9 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             autoCapitalize="off"
             enterKeyHint="search"
             spellCheck={false}
-            onChange={(event) => {
-              setQuery(event.target.value);
-              setIsDismissed(false);
-              setActiveIndex(-1);
-            }}
-            onFocus={() => {
-              setIsFocused(true);
-              setIsLensOpen(false);
-              setIsDismissed(false);
-            }}
-            onBlur={() => {
-              setIsFocused(false);
-              setActiveIndex(-1);
-            }}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             onKeyDown={handleKeyDown}
           />
           <button
