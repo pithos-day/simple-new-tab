@@ -25,10 +25,24 @@ function openPanel() {
   fireEvent.click(screen.getByRole('button', { name: 'Google レンズで検索' }));
 }
 
-function dispatchWithData(type: 'drop' | 'paste', key: string, data: unknown) {
+function dispatchWithData(type: string, key: string, data: unknown) {
   const event = new Event(type, { bubbles: true, cancelable: true });
   Object.defineProperty(event, key, { value: data });
   document.dispatchEvent(event);
+}
+
+function dispatchDrop(data: unknown) {
+  dispatchWithData('drop', 'dataTransfer', data);
+}
+
+function dispatchPaste(data: unknown) {
+  dispatchWithData('paste', 'clipboardData', data);
+}
+
+function submitImageUrl(value: string) {
+  const input = screen.getByRole<HTMLInputElement>('textbox', { name: '画像の URL' });
+  fireEvent.change(input, { target: { value } });
+  fireEvent.submit(input.form as HTMLFormElement);
 }
 
 beforeEach(() => {
@@ -86,9 +100,7 @@ describe('Lens panel', () => {
   it('searches for an entered image URL', () => {
     openPanel();
 
-    const input = screen.getByRole<HTMLInputElement>('textbox', { name: '画像の URL' });
-    fireEvent.change(input, { target: { value: 'https://example.com/a.png' } });
-    fireEvent.submit(input.form as HTMLFormElement);
+    submitImageUrl('https://example.com/a.png');
 
     expect(submittedForm()).toMatchObject({
       action: 'https://lens.google.com/uploadbyurl',
@@ -100,9 +112,7 @@ describe('Lens panel', () => {
   it('shows an error for an invalid URL', () => {
     openPanel();
 
-    const input = screen.getByRole<HTMLInputElement>('textbox', { name: '画像の URL' });
-    fireEvent.change(input, { target: { value: 'file:///a.png' } });
-    fireEvent.submit(input.form as HTMLFormElement);
+    submitImageUrl('file:///a.png');
 
     expect(submit).not.toHaveBeenCalled();
     expect(screen.getByRole('alert').textContent).toContain('画像 URL');
@@ -111,7 +121,7 @@ describe('Lens panel', () => {
   it('uploads a dropped image', () => {
     openPanel();
 
-    dispatchWithData('drop', 'dataTransfer', fakeDataTransfer([imageFile]));
+    dispatchDrop(fakeDataTransfer([imageFile]));
 
     expect(submittedForm()).toMatchObject({
       action: 'https://lens.google.com/v3/upload',
@@ -123,7 +133,7 @@ describe('Lens panel', () => {
   it('uploads a pasted image', () => {
     openPanel();
 
-    dispatchWithData('paste', 'clipboardData', fakeDataTransfer([imageFile]));
+    dispatchPaste(fakeDataTransfer([imageFile]));
 
     expect(submittedForm()).toMatchObject({ action: 'https://lens.google.com/v3/upload' });
   });
@@ -160,7 +170,7 @@ describe('Lens panel', () => {
   it('does not send a pasted image while the panel is closed', () => {
     render(<App />);
 
-    dispatchWithData('paste', 'clipboardData', fakeDataTransfer([imageFile]));
+    dispatchPaste(fakeDataTransfer([imageFile]));
 
     expect(submit).not.toHaveBeenCalled();
   });
