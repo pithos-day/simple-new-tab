@@ -12,6 +12,7 @@ Chrome 104 以降を対象としています。Chromium 系（Edge / Brave / Arc
 
 - **WXT** — マニフェスト生成、Chrome 向けビルド、HMR
 - **React 19 + TypeScript** — ニュータブページの UI
+- **rollup-plugin-license** — バンドルに含まれる第三者ライセンスの抽出
 - **Biome** — フォーマットと基本リント
 - **ESLint** — React Hooks / React Refresh 向けの追加リント
 - **Vitest + happy-dom + Testing Library** — コンポーネントテスト
@@ -70,9 +71,11 @@ Chrome が起動し、拡張機能が読み込まれた状態で開発できま�
 │       ├── App.tsx          # 現状はプレースホルダー
 │       └── style.css
 ├── tests/                   # Vitest
+├── scripts/notices.ts       # 第三者ライセンスの整形
+├── THIRD_PARTY_NOTICES.txt  # ビルド時に生成する第三者ライセンス一覧
 ├── assets/icon.svg          # アイコンの原本
 ├── public/icon/             # 16 / 32 / 48 / 96 / 128 px の PNG
-├── wxt.config.ts            # 表示名・説明
+├── wxt.config.ts            # 表示名・説明・ライセンス生成の設定
 ├── biome.json
 ├── eslint.config.js
 ├── knip.json
@@ -92,10 +95,20 @@ Chrome が起動し、拡張機能が読み込まれた状態で開発できま�
   done
   ```
 
+## 第三者ライセンス
+
+`pnpm build` は、実際にバンドルされた第三者パッケージの `LICENSE` / `NOTICE` を収集し、リポジトリ直下の `THIRD_PARTY_NOTICES.txt` を生成します。生成物はビルド出力にもコピーされ、配布 ZIP に同梱されます。
+
+- 対象はバンドルに含まれたコードのみです。ビルドに含まれない devDependencies は対象外ですが、WXT のランタイムのようにバンドルされる devDependency は対象になります
+- tree-shake で消えた依存は含まれません
+- ライセンス本文が見つからないパッケージがある場合、ビルドは失敗します
+- 依存を追加・更新したら `pnpm build` を実行し、`THIRD_PARTY_NOTICES.txt` の差分をコミットしてください
+- CI はビルド後の `THIRD_PARTY_NOTICES.txt` に差分がないか確認します
+
 ## チェック
 
-Husky の `pre-commit` で `lint-staged` が実行され、ステージしたファイルに Biome と ESLint の自動修正がかかります。GitHub Actions では push / pull request 時に `pnpm check` と `pnpm build` / `pnpm zip` を実行します。
+Husky の `pre-commit` で `lint-staged` が実行され、ステージしたファイルに Biome と ESLint の自動修正がかかります。GitHub Actions では push / pull request 時に `pnpm check` と `pnpm build` / `pnpm zip` を実行し、`THIRD_PARTY_NOTICES.txt` が最新かどうかも検証します。
 
 ## ライセンス
 
-MIT
+このプロジェクトは MIT ライセンスです。配布物に含まれる第三者ソフトウェアのライセンスは [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt) にまとめています。
