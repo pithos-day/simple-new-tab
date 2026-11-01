@@ -9,11 +9,11 @@ function isAbortError(error: unknown): boolean {
 }
 
 export function useSuggestions(query: string, enabled: boolean): string[] {
-  const [items, setItems] = useState(EMPTY_SUGGESTIONS);
+  const [suggestions, setSuggestions] = useState(EMPTY_SUGGESTIONS);
 
   // 入力を消した後に打ち直したとき、以前の候補を一瞬でも表示しない。
-  if (!query && items.length > 0) {
-    setItems(EMPTY_SUGGESTIONS);
+  if (!query && suggestions.length > 0) {
+    setSuggestions(EMPTY_SUGGESTIONS);
   }
 
   useEffect(() => {
@@ -23,14 +23,14 @@ export function useSuggestions(query: string, enabled: boolean): string[] {
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
       void fetchSuggestions(query, { signal: controller.signal })
-        .then((nextItems) => {
+        .then((nextSuggestions) => {
           if (!cancelled) {
-            setItems(nextItems);
+            setSuggestions(nextSuggestions);
           }
         })
         .catch((error: unknown) => {
           if (!cancelled && !isAbortError(error)) {
-            setItems(EMPTY_SUGGESTIONS);
+            setSuggestions(EMPTY_SUGGESTIONS);
           }
         });
     }, DEBOUNCE_MS);
@@ -43,5 +43,5 @@ export function useSuggestions(query: string, enabled: boolean): string[] {
   }, [enabled, query]);
 
   // 次の候補が届くまで現在の候補を残し、入力のたびに一覧がちらつかないようにする。
-  return enabled && query ? items : EMPTY_SUGGESTIONS;
+  return enabled && query ? suggestions : EMPTY_SUGGESTIONS;
 }
