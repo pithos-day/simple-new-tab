@@ -8,6 +8,15 @@ const bundledDependencies = new Map<string, NoticeDependency>();
 
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
+  dev: {
+    // Chromium は環境によって `localhost` を IPv4 に解決するが、WXT の既定値では
+    // 開発サーバーが IPv6 の ::1 だけで待ち受けて接続できないことがある。
+    // ホストと接続元の両方を IPv4 のループバックに揃える。
+    server: {
+      host: '127.0.0.1',
+      origin: '127.0.0.1',
+    },
+  },
   vite: () => ({
     plugins: [
       license({
