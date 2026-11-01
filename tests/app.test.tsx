@@ -23,6 +23,7 @@ function submitSearch(value: string) {
 }
 
 async function openSuggestions(items: string[]) {
+  render(<App />);
   fetchMock.mockResolvedValue(Response.json(['query', items]));
 
   const input = getInput();
@@ -66,7 +67,6 @@ describe('new tab', () => {
 
 describe('suggestions', () => {
   it('searches for a clicked suggestion', async () => {
-    render(<App />);
     await openSuggestions(['WXT', 'WXT React']);
 
     fireEvent.click(screen.getByRole('option', { name: 'WXT React' }));
@@ -75,7 +75,6 @@ describe('suggestions', () => {
   });
 
   it('selects a suggestion with the arrow keys and searches with Enter', async () => {
-    render(<App />);
     const input = await openSuggestions(['WXT', 'WXT React']);
 
     fireEvent.keyDown(input, { key: 'ArrowDown' });
@@ -93,7 +92,6 @@ describe('suggestions', () => {
   });
 
   it('closes the list with Escape', async () => {
-    render(<App />);
     const input = await openSuggestions(['WXT']);
 
     fireEvent.keyDown(input, { key: 'Escape' });
@@ -102,7 +100,6 @@ describe('suggestions', () => {
   });
 
   it('leaves key presses to the IME while composing', async () => {
-    render(<App />);
     const input = await openSuggestions(['WXT']);
 
     fireEvent.keyDown(input, { key: 'ArrowDown', isComposing: true });
@@ -113,7 +110,6 @@ describe('suggestions', () => {
   });
 
   it('keeps the typed text as the search target while hovering a suggestion', async () => {
-    render(<App />);
     const input = await openSuggestions(['WXT']);
 
     fireEvent.mouseEnter(screen.getByRole('option', { name: 'WXT' }));
@@ -123,7 +119,6 @@ describe('suggestions', () => {
   });
 
   it('keeps the current suggestions while the next ones are loading', async () => {
-    render(<App />);
     const input = await openSuggestions(['WXT']);
 
     fireEvent.change(input, { target: { value: 'wxt' } });
@@ -132,7 +127,6 @@ describe('suggestions', () => {
   });
 
   it('hides the suggestions when the input is cleared', async () => {
-    render(<App />);
     const input = await openSuggestions(['WXT']);
 
     fireEvent.change(input, { target: { value: '' } });
