@@ -47,6 +47,7 @@ export async function fetchSuggestions(
   const language = options.language ?? navigator.language;
   const response = await fetch(buildSuggestionUrl(query, language), {
     signal: options.signal,
+    // 入力中の語句以外を Google に渡さないよう、Cookie とリファラーを送らない。
     credentials: 'omit',
     referrerPolicy: 'no-referrer',
     redirect: 'error',
