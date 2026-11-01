@@ -4,7 +4,7 @@ import license from 'rollup-plugin-license';
 import { defineConfig } from 'wxt';
 import { NOTICES_FILE, type NoticeDependency, renderNotices } from './scripts/notices';
 
-const bundledDependencies = new Map<string, NoticeDependency>();
+const bundledDependencies: NoticeDependency[] = [];
 
 // public/favicon.svg に埋め込んでいる Chromium の新規タブ用アイコン。
 // npm パッケージではなく自動収集されないため、ライセンス表記を明示的に追加する。
@@ -37,7 +37,7 @@ export default defineConfig({
             for (const dependency of dependencies) {
               if (!dependency.name || !dependency.version) continue;
 
-              bundledDependencies.set(`${dependency.name}@${dependency.version}`, {
+              bundledDependencies.push({
                 name: dependency.name,
                 version: dependency.version,
                 license: dependency.license,
@@ -53,18 +53,18 @@ export default defineConfig({
   }),
   hooks: {
     'build:before': () => {
-      bundledDependencies.clear();
+      bundledDependencies.length = 0;
     },
     'build:publicAssets': (wxt, files) => {
       if (wxt.config.command !== 'build') return;
 
-      if (bundledDependencies.size === 0) {
+      if (bundledDependencies.length === 0) {
         throw new Error(
           'No bundled third-party dependencies were found while generating third-party notices.',
         );
       }
 
-      const contents = renderNotices([...bundledDependencies.values(), CHROMIUM_FAVICON_NOTICE]);
+      const contents = renderNotices([...bundledDependencies, CHROMIUM_FAVICON_NOTICE]);
       writeFileSync(path.resolve(wxt.config.root, NOTICES_FILE), contents, 'utf8');
 
       const generatedFile = {
