@@ -66,7 +66,7 @@ body {
 
 .search-field input:focus-visible {
   border-color: transparent;
-  outline: 3px solid Highlight;
+  outline: 3px solid rgb(128, 128, 128);
   outline-offset: 3px;
 }
 
@@ -93,7 +93,7 @@ body {
 }
 
 .lens:focus-visible {
-  outline: 3px solid Highlight;
+  outline: 3px solid rgb(128, 128, 128);
   outline-offset: 1px;
 }
 
@@ -146,7 +146,7 @@ body {
 }
 
 .lens-drop[data-dragging='true'] {
-  border-color: Highlight;
+  border-color: rgb(128, 128, 128);
   background: rgba(128, 128, 128, 0.15);
 }
 
