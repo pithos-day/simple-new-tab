@@ -56,6 +56,7 @@ Chrome が起動し、拡張機能が読み込まれた状態で開発できま�
 | `pnpm test`       | Vitest（1 回実行）                        |
 | `pnpm test:watch` | Vitest（ウォッチ）                        |
 | `pnpm knip`       | 未使用コード・依存関係の検出              |
+| `pnpm license`    | 本番依存のライセンス一覧を再生成          |
 | `pnpm check`      | lint / typecheck / test / knip を一括実行 |
 
 ## ディレクトリ構成
@@ -70,6 +71,7 @@ Chrome が起動し、拡張機能が読み込まれた状態で開発できま�
 │       ├── App.tsx          # 現状はプレースホルダー
 │       └── style.css
 ├── tests/                   # Vitest
+├── THIRD-PARTY-LICENSES.txt # 本番依存のライセンス一覧
 ├── assets/icon.svg          # アイコンの原本
 ├── public/icon/             # 16 / 32 / 48 / 96 / 128 px の PNG
 ├── wxt.config.ts            # 表示名・説明
@@ -98,4 +100,4 @@ Husky の `pre-commit` で `lint-staged` が実行され、ステージしたフ
 
 ## ライセンス
 
-MIT
+このプロジェクトは MIT ライセンスです。本番ビルドに含まれる第三者依存のライセンスは [THIRD-PARTY-LICENSES.txt](THIRD-PARTY-LICENSES.txt) にまとめています。`pnpm license` で再生成できます。
