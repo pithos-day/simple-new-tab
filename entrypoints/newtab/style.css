@@ -138,8 +138,11 @@ body {
 }
 
 .lens-drop {
-  padding: 40px 16px;
+  display: grid;
+  min-height: 240px;
+  padding: 16px;
   margin: 0;
+  place-items: center;
   border: 2px dashed rgba(128, 128, 128, 0.45);
   border-radius: 12px;
   text-align: center;
