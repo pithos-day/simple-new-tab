@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest';
 import App from '../entrypoints/newtab/App';
 
 describe('new tab', () => {
-  it('renders the placeholder heading', () => {
+  it('renders only the search bar', () => {
     render(<App />);
 
-    expect(screen.getByRole('heading', { name: 'Simple New Tab' })).toBeTruthy();
+    expect(screen.getByRole('searchbox', { name: '検索' })).toBeTruthy();
   });
 });
