@@ -53,6 +53,7 @@ export function searchWithLens(source: ImageSource): void {
     form.method = 'get';
     form.append(field);
   } else {
+    // input.files には FileList しか代入できないため、DataTransfer 経由で作る。
     const transfer = new DataTransfer();
     transfer.items.add(source.file);
 

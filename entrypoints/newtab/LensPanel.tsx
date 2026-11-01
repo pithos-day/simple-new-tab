@@ -45,6 +45,7 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
       setIsDragging(true);
     };
     const handleDragLeave = (event: DragEvent) => {
+      // 子要素間の移動では relatedTarget が入るので、ウィンドウ外へ出たときだけ解除する。
       if (!event.relatedTarget) setIsDragging(false);
     };
     const handleDrop = (event: DragEvent) => {

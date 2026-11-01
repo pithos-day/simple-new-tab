@@ -94,6 +94,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   const handleFocus = () => {
     setIsFocused(true);
+    // レンズパネルと候補一覧は同じ位置に重なるため、同時に開かない。
     setIsLensOpen(false);
     setIsDismissed(false);
   };
@@ -207,6 +208,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                   role="option"
                   aria-selected={index === activeIndex}
                   tabIndex={-1}
+                  // input の blur で一覧が消えると click が届かないため、フォーカスを移さない。
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => runSearch(suggestion)}
                 >
