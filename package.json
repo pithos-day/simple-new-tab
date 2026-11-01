@@ -11,6 +11,9 @@
     "zip": "wxt zip",
     "compile": "tsc --noEmit",
     "typecheck": "wxt prepare && tsc --noEmit",
+    "lint": "biome check . && eslint .",
+    "lint:fix": "biome check --write . && eslint . --fix",
+    "format": "biome format --write .",
     "postinstall": "wxt prepare"
   },
   "keywords": [
@@ -42,10 +45,17 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.6.4",
+    "@eslint/js": "^10.0.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@wxt-dev/module-react": "^1.2.2",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
     "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1",
     "wxt": "^0.21.5"
   }
 }
