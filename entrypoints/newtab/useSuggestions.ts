@@ -4,10 +4,6 @@ import { fetchSuggestions } from './suggestions';
 const DEBOUNCE_MS = 180;
 const EMPTY_SUGGESTIONS: string[] = [];
 
-function isAbortError(error: unknown): boolean {
-  return error instanceof DOMException && error.name === 'AbortError';
-}
-
 export function useSuggestions(query: string, enabled: boolean): string[] {
   const [suggestions, setSuggestions] = useState(EMPTY_SUGGESTIONS);
 
@@ -19,24 +15,23 @@ export function useSuggestions(query: string, enabled: boolean): string[] {
   useEffect(() => {
     if (!enabled || !query) return;
 
-    let cancelled = false;
     const controller = new AbortController();
+    const { signal } = controller;
     const timer = window.setTimeout(() => {
-      void fetchSuggestions(query, { signal: controller.signal })
+      void fetchSuggestions(query, { signal })
         .then((nextSuggestions) => {
-          if (!cancelled) {
+          if (!signal.aborted) {
             setSuggestions(nextSuggestions);
           }
         })
-        .catch((error: unknown) => {
-          if (!cancelled && !isAbortError(error)) {
+        .catch(() => {
+          if (!signal.aborted) {
             setSuggestions(EMPTY_SUGGESTIONS);
           }
         });
     }, DEBOUNCE_MS);
 
     return () => {
-      cancelled = true;
       window.clearTimeout(timer);
       controller.abort();
     };
