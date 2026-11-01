@@ -10,6 +10,8 @@ export function buildSuggestionUrl(query: string, language: string): string {
   const url = new URL(SUGGEST_ENDPOINT);
   url.searchParams.set('client', 'chrome');
   url.searchParams.set('hl', language);
+  // 指定しないと hl=ja などで Shift_JIS が返り、response.json() で文字化けする。
+  url.searchParams.set('oe', 'utf-8');
   url.searchParams.set('q', query);
   return url.toString();
 }

@@ -4,9 +4,14 @@ import { browser } from 'wxt/browser';
 import App from '../entrypoints/newtab/App';
 
 const searchQuery = vi.spyOn(browser.search, 'query');
+const fetchMock = vi.spyOn(globalThis, 'fetch');
+
+function getInput() {
+  return screen.getByRole<HTMLInputElement>('combobox', { name: '検索' });
+}
 
 function submitSearch(value: string) {
-  const input = screen.getByRole<HTMLInputElement>('searchbox', { name: '検索' });
+  const input = getInput();
 
   fireEvent.change(input, { target: { value } });
 
@@ -17,16 +22,29 @@ function submitSearch(value: string) {
   fireEvent.submit(input.form);
 }
 
+async function openSuggestions(items: string[]) {
+  fetchMock.mockResolvedValue(Response.json(['query', items]));
+
+  const input = getInput();
+  fireEvent.focus(input);
+  fireEvent.change(input, { target: { value: 'wx' } });
+
+  await screen.findByRole('listbox', { name: '検索候補' });
+
+  return input;
+}
+
 beforeEach(() => {
   searchQuery.mockReset();
   searchQuery.mockResolvedValue(undefined);
+  fetchMock.mockReset();
 });
 
 describe('new tab', () => {
-  it('renders only the search bar', () => {
+  it('renders the search bar', () => {
     render(<App />);
 
-    expect(screen.getByRole('searchbox', { name: '検索' })).toBeTruthy();
+    expect(getInput()).toBeTruthy();
   });
 
   it('searches with the default search provider', () => {
@@ -43,5 +61,82 @@ describe('new tab', () => {
     submitSearch('   ');
 
     expect(searchQuery).not.toHaveBeenCalled();
+  });
+});
+
+describe('suggestions', () => {
+  it('searches for a clicked suggestion', async () => {
+    render(<App />);
+    await openSuggestions(['WXT', 'WXT React']);
+
+    fireEvent.click(screen.getByRole('option', { name: 'WXT React' }));
+
+    expect(searchQuery).toHaveBeenCalledWith({ text: 'WXT React', disposition: 'CURRENT_TAB' });
+  });
+
+  it('selects a suggestion with the arrow keys and searches with Enter', async () => {
+    render(<App />);
+    const input = await openSuggestions(['WXT', 'WXT React']);
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'ArrowUp' });
+
+    expect(screen.getByRole('option', { name: 'WXT React' }).getAttribute('aria-selected')).toBe(
+      'true',
+    );
+
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(searchQuery).toHaveBeenCalledWith({ text: 'WXT React', disposition: 'CURRENT_TAB' });
+  });
+
+  it('closes the list with Escape', async () => {
+    render(<App />);
+    const input = await openSuggestions(['WXT']);
+
+    fireEvent.keyDown(input, { key: 'Escape' });
+
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
+
+  it('leaves key presses to the IME while composing', async () => {
+    render(<App />);
+    const input = await openSuggestions(['WXT']);
+
+    fireEvent.keyDown(input, { key: 'ArrowDown', isComposing: true });
+    fireEvent.keyDown(input, { key: 'Enter', isComposing: true });
+
+    expect(screen.getByRole('option', { name: 'WXT' }).getAttribute('aria-selected')).toBe('false');
+    expect(searchQuery).not.toHaveBeenCalled();
+  });
+
+  it('keeps the typed text as the search target while hovering a suggestion', async () => {
+    render(<App />);
+    const input = await openSuggestions(['WXT']);
+
+    fireEvent.mouseEnter(screen.getByRole('option', { name: 'WXT' }));
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(searchQuery).not.toHaveBeenCalled();
+  });
+
+  it('keeps the current suggestions while the next ones are loading', async () => {
+    render(<App />);
+    const input = await openSuggestions(['WXT']);
+
+    fireEvent.change(input, { target: { value: 'wxt' } });
+
+    expect(screen.getByRole('option', { name: 'WXT' })).toBeTruthy();
+  });
+
+  it('hides the suggestions when the input is cleared', async () => {
+    render(<App />);
+    const input = await openSuggestions(['WXT']);
+
+    fireEvent.change(input, { target: { value: '' } });
+
+    expect(screen.queryByRole('listbox')).toBeNull();
   });
 });

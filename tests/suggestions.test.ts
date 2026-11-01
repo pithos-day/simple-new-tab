@@ -36,6 +36,7 @@ describe('buildSuggestionUrl', () => {
     expect(url.pathname).toBe('/complete/search');
     expect(url.searchParams.get('client')).toBe('chrome');
     expect(url.searchParams.get('hl')).toBe('ja-JP');
+    expect(url.searchParams.get('oe')).toBe('utf-8');
     expect(url.searchParams.get('q')).toBe('猫 検索');
   });
 });
