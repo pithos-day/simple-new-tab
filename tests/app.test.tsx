@@ -35,6 +35,10 @@ async function openSuggestions(items: string[]) {
   return input;
 }
 
+function expectSearchedFor(text: string) {
+  expect(searchQuery).toHaveBeenCalledWith({ text, disposition: 'CURRENT_TAB' });
+}
+
 beforeEach(() => {
   searchQuery.mockReset();
   searchQuery.mockResolvedValue(undefined);
@@ -53,7 +57,7 @@ describe('new tab', () => {
 
     submitSearch('  WXT  ');
 
-    expect(searchQuery).toHaveBeenCalledWith({ text: 'WXT', disposition: 'CURRENT_TAB' });
+    expectSearchedFor('WXT');
   });
 
   it('does not search when the query is blank', () => {
@@ -71,7 +75,7 @@ describe('suggestions', () => {
 
     fireEvent.click(screen.getByRole('option', { name: 'WXT React' }));
 
-    expect(searchQuery).toHaveBeenCalledWith({ text: 'WXT React', disposition: 'CURRENT_TAB' });
+    expectSearchedFor('WXT React');
   });
 
   it('selects a suggestion with the arrow keys and searches with Enter', async () => {
@@ -88,7 +92,7 @@ describe('suggestions', () => {
 
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(searchQuery).toHaveBeenCalledWith({ text: 'WXT React', disposition: 'CURRENT_TAB' });
+    expectSearchedFor('WXT React');
   });
 
   it('closes the list with Escape', async () => {
