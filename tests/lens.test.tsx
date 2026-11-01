@@ -3,10 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../entrypoints/newtab/App';
 import { parseHttpUrl, readImageSource } from '../entrypoints/newtab/lens';
 
-const image = new File(['image'], 'cat.png', { type: 'image/png' });
-const text = new File(['text'], 'note.txt', { type: 'text/plain' });
+const imageFile = new File(['image'], 'cat.png', { type: 'image/png' });
+const textFile = new File(['text'], 'note.txt', { type: 'text/plain' });
 
-function dataTransfer(files: File[], data: Record<string, string> = {}) {
+function fakeDataTransfer(files: File[], data: Record<string, string> = {}) {
   return {
     files: files as unknown as FileList,
     getData: (format: string) => data[format] ?? '',
@@ -57,26 +57,28 @@ describe('parseHttpUrl', () => {
 describe('readImageSource', () => {
   it('prefers an image file', () => {
     expect(
-      readImageSource(dataTransfer([text, image], { 'text/uri-list': 'https://example.com/a' })),
-    ).toEqual({ type: 'file', file: image });
+      readImageSource(
+        fakeDataTransfer([textFile, imageFile], { 'text/uri-list': 'https://example.com/a' }),
+      ),
+    ).toEqual({ type: 'file', file: imageFile });
   });
 
   it('falls back to the first URL of a uri-list', () => {
     expect(
       readImageSource(
-        dataTransfer([], { 'text/uri-list': '# comment\r\nhttps://example.com/a.png\r\n' }),
+        fakeDataTransfer([], { 'text/uri-list': '# comment\r\nhttps://example.com/a.png\r\n' }),
       ),
     ).toEqual({ type: 'url', url: 'https://example.com/a.png' });
   });
 
   it('falls back to plain text', () => {
     expect(
-      readImageSource(dataTransfer([], { 'text/plain': 'https://example.com/a.png' })),
+      readImageSource(fakeDataTransfer([], { 'text/plain': 'https://example.com/a.png' })),
     ).toEqual({ type: 'url', url: 'https://example.com/a.png' });
   });
 
   it('returns null when there is no image', () => {
-    expect(readImageSource(dataTransfer([text], { 'text/plain': 'cat' }))).toBeNull();
+    expect(readImageSource(fakeDataTransfer([textFile], { 'text/plain': 'cat' }))).toBeNull();
   });
 });
 
@@ -109,7 +111,7 @@ describe('Lens panel', () => {
   it('uploads a dropped image', () => {
     openPanel();
 
-    dispatchWithData('drop', 'dataTransfer', dataTransfer([image]));
+    dispatchWithData('drop', 'dataTransfer', fakeDataTransfer([imageFile]));
 
     expect(submittedForm()).toMatchObject({
       action: 'https://lens.google.com/v3/upload',
@@ -121,7 +123,7 @@ describe('Lens panel', () => {
   it('uploads a pasted image', () => {
     openPanel();
 
-    dispatchWithData('paste', 'clipboardData', dataTransfer([image]));
+    dispatchWithData('paste', 'clipboardData', fakeDataTransfer([imageFile]));
 
     expect(submittedForm()).toMatchObject({ action: 'https://lens.google.com/v3/upload' });
   });
@@ -135,7 +137,11 @@ describe('Lens panel', () => {
   it('searches for a URL pasted outside the URL input', () => {
     openPanel();
 
-    dispatchWithData('paste', 'clipboardData', dataTransfer([], { 'text/plain': 'https://a.jp' }));
+    dispatchWithData(
+      'paste',
+      'clipboardData',
+      fakeDataTransfer([], { 'text/plain': 'https://a.jp' }),
+    );
 
     expect(submittedForm()).toMatchObject({ action: 'https://lens.google.com/uploadbyurl' });
   });
@@ -145,7 +151,7 @@ describe('Lens panel', () => {
 
     const input = screen.getByRole('textbox', { name: '画像の URL' });
     fireEvent.paste(input, {
-      clipboardData: dataTransfer([], { 'text/plain': 'https://a.jp' }),
+      clipboardData: fakeDataTransfer([], { 'text/plain': 'https://a.jp' }),
     });
 
     expect(submit).not.toHaveBeenCalled();
@@ -154,7 +160,7 @@ describe('Lens panel', () => {
   it('does not send a pasted image while the panel is closed', () => {
     render(<App />);
 
-    dispatchWithData('paste', 'clipboardData', dataTransfer([image]));
+    dispatchWithData('paste', 'clipboardData', fakeDataTransfer([imageFile]));
 
     expect(submit).not.toHaveBeenCalled();
   });
