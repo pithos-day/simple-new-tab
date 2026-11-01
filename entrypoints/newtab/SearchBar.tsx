@@ -48,7 +48,9 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   const suggestions = useSuggestions(trimmedQuery, isFocused);
   const isListOpen = isFocused && !isDismissed && suggestions.length > 0;
   const activeSuggestion =
-    activeIndex >= 0 && activeIndex < suggestions.length ? suggestions[activeIndex] : undefined;
+    isListOpen && activeIndex >= 0 && activeIndex < suggestions.length
+      ? suggestions[activeIndex]
+      : undefined;
 
   // aria-activedescendant ではブラウザがスクロールしないため、選択中の候補を画面内に収める。
   useEffect(() => {
@@ -112,7 +114,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       return;
     }
 
-    const selectedIndex = isListOpen && activeSuggestion ? activeIndex : -1;
+    const selectedIndex = activeSuggestion ? activeIndex : -1;
     const showOption = (index: number) => {
       event.preventDefault();
       setIsDismissed(false);

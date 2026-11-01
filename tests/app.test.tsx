@@ -142,6 +142,17 @@ describe('suggestions', () => {
     );
   });
 
+  it('does not search for the selected suggestion again after the list closes', async () => {
+    const input = await openSuggestions(['WXT', 'WXT React']);
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(searchQuery).toHaveBeenCalledTimes(1);
+    expect(input.getAttribute('aria-activedescendant')).toBeNull();
+  });
+
   it('closes the list with Escape', async () => {
     const input = await openSuggestions(['WXT']);
 
