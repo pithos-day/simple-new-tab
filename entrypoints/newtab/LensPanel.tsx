@@ -65,19 +65,16 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
       if (event.key === 'Escape') onClose();
     };
 
-    document.addEventListener('paste', handlePaste);
-    document.addEventListener('dragover', handleDragOver);
-    document.addEventListener('dragleave', handleDragLeave);
-    document.addEventListener('drop', handleDrop);
-    document.addEventListener('keydown', handleKeyDown);
+    const controller = new AbortController();
+    const { signal } = controller;
 
-    return () => {
-      document.removeEventListener('paste', handlePaste);
-      document.removeEventListener('dragover', handleDragOver);
-      document.removeEventListener('dragleave', handleDragLeave);
-      document.removeEventListener('drop', handleDrop);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    document.addEventListener('paste', handlePaste, { signal });
+    document.addEventListener('dragover', handleDragOver, { signal });
+    document.addEventListener('dragleave', handleDragLeave, { signal });
+    document.addEventListener('drop', handleDrop, { signal });
+    document.addEventListener('keydown', handleKeyDown, { signal });
+
+    return () => controller.abort();
   }, [onClose, searchAndClose]);
 
   const handleUrlSubmit = (event: FormEvent<HTMLFormElement>) => {
