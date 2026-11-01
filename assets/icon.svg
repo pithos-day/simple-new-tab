@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>Simple New Tab</title>
+  <rect width="128" height="128" rx="30" fill="#2563eb"/>
+  <path d="M64 38v52M38 64h52" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+</svg>
