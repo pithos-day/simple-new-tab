@@ -53,10 +53,10 @@ describe('fetchSuggestions', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    await expect(fetchSuggestions('WXT', { language: 'ja' })).resolves.toEqual(['WXT', 'React']);
+    await expect(fetchSuggestions('WXT')).resolves.toEqual(['WXT', 'React']);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      buildSuggestionUrl('WXT', 'ja'),
+      buildSuggestionUrl('WXT', navigator.language),
       expect.objectContaining({
         credentials: 'omit',
         referrerPolicy: 'no-referrer',
@@ -76,8 +76,6 @@ describe('fetchSuggestions', () => {
       }),
     );
 
-    await expect(fetchSuggestions('WXT', { language: 'ja' })).rejects.toThrow(
-      'Google Suggest request failed: 503',
-    );
+    await expect(fetchSuggestions('WXT')).rejects.toThrow('Google Suggest request failed: 503');
   });
 });

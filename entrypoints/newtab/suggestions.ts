@@ -1,11 +1,6 @@
 const SUGGEST_ENDPOINT = 'https://suggestqueries.google.com/complete/search';
 const MAX_SUGGESTIONS = 8;
 
-interface FetchSuggestionsOptions {
-  signal?: AbortSignal;
-  language?: string;
-}
-
 export function buildSuggestionUrl(query: string, language: string): string {
   const url = new URL(SUGGEST_ENDPOINT);
   url.searchParams.set('client', 'chrome');
@@ -40,13 +35,9 @@ export function parseSuggestions(payload: unknown): string[] {
   return suggestions;
 }
 
-export async function fetchSuggestions(
-  query: string,
-  options: FetchSuggestionsOptions = {},
-): Promise<string[]> {
-  const language = options.language ?? navigator.language;
-  const response = await fetch(buildSuggestionUrl(query, language), {
-    signal: options.signal,
+export async function fetchSuggestions(query: string, signal?: AbortSignal): Promise<string[]> {
+  const response = await fetch(buildSuggestionUrl(query, navigator.language), {
+    signal,
     // 入力中の語句以外を Google に渡さないよう、Cookie とリファラーを送らない。
     credentials: 'omit',
     referrerPolicy: 'no-referrer',

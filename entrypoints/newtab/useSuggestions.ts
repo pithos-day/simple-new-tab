@@ -18,7 +18,7 @@ export function useSuggestions(query: string, enabled: boolean): string[] {
     const controller = new AbortController();
     const { signal } = controller;
     const timer = window.setTimeout(() => {
-      void fetchSuggestions(query, { signal })
+      void fetchSuggestions(query, signal)
         .then((nextSuggestions) => {
           if (!signal.aborted) {
             setSuggestions(nextSuggestions);
