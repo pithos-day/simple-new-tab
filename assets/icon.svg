@@ -1,5 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <title>Simple New Tab</title>
-  <rect width="128" height="128" rx="30" fill="#2563eb"/>
-  <path d="M64 38v52M38 64h52" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+  <path fill="#00fa9a" fill-rule="evenodd" d="
+    M112 0H400A112 112 0 0 1 512 112V400A112 112 0 0 1 400 512H112A112 112 0 0 1 0 400V112A112 112 0 0 1 112 0Z
+    M156 96H416V356H156Z
+    M181 166H391V331H181Z
+    M96 156H121V391H356V416H96Z
+  "/>
 </svg>
