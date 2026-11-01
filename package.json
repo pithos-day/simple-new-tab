@@ -1,0 +1,51 @@
+{
+  "name": "simple-new-tab",
+  "displayName": "Simple New Tab",
+  "description": "A simple new tab page for Chromium.",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "zip": "wxt zip",
+    "compile": "tsc --noEmit",
+    "typecheck": "wxt prepare && tsc --noEmit",
+    "postinstall": "wxt prepare"
+  },
+  "keywords": [
+    "browser-extension",
+    "new-tab",
+    "wxt",
+    "react",
+    "typescript"
+  ],
+  "author": "pithos",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pithos-day/simple-new-tab.git"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.8.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@11.8.0",
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@wxt-dev/module-react": "^1.2.2",
+    "typescript": "~6.0.3",
+    "wxt": "^0.21.5"
+  }
+}
