@@ -1,3 +1,5 @@
+// wxt/browser は使わない。依存先の @wxt-dev/browser は LICENSE を同梱しておらず、
+// バンドルに入ると第三者ライセンスの生成でビルドが失敗する。
 interface ChromeSearchApi {
   search: {
     query(queryInfo: { text: string; disposition: 'CURRENT_TAB' }): Promise<void>;
