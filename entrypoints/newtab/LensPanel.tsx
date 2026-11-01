@@ -29,12 +29,11 @@ export default function LensPanel({ id, onClose }: LensPanelProps) {
       if (!event.clipboardData) return;
 
       // URL 欄への文字列の貼り付けは通常どおり入力させ、それ以外の場所では URL も受け取る。
-      const file = findImageFile(event.clipboardData);
-      const source: ImageSource | null = file
-        ? { type: 'file', file }
-        : event.target === urlInputRef.current
-          ? null
-          : readImageSource(event.clipboardData);
+      const isTextForUrlInput =
+        event.target === urlInputRef.current && !findImageFile(event.clipboardData);
+      if (isTextForUrlInput) return;
+
+      const source = readImageSource(event.clipboardData);
       if (!source) return;
 
       event.preventDefault();
